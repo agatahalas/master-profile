@@ -1,0 +1,23 @@
+global-css:
+  version: 1.x
+  css:
+    base:
+      "assets/uikit/dist/css/uikit.circlek.min.css": { minified: true }
+
+local-global-css:
+  version: 1.x
+  css:
+    base:
+      "assets/uikit/dist/css/uikit.circlek.css": { minified: false }
+
+global-scripts:
+  version: 1.x
+  js:
+    "assets/uikit/dist/js/uikit.min.js": { minified: true }
+    "assets/uikit/dist/js/uikit-icons.min.js": { minified: true }
+
+local-global-scripts:
+  version: 1.x
+  js:
+    "assets/uikit/dist/js/uikit.js": { minified: false }
+    "assets/uikit/dist/js/uikit-icons.js": { minified: false }

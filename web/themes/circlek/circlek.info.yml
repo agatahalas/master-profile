@@ -1,0 +1,19 @@
+name: CircleK
+type: theme
+description: 'CircleK theme built by team from Poland.'
+logo: 'assets/images/logo.svg'
+package: circlek
+version: VERSION
+core_version_requirement: ^8 || ^9
+base theme: false
+regions:
+  top: Top
+  header: Header
+  highlighted: Highlighted
+  help: Help
+  sidebar_first: Sidebar first
+  content: Content
+  sidebar_second: Sidebar second
+  footer: Footer
+  bottom: Bottom
+  admin_area: Admin area

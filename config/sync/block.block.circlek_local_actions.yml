@@ -1,0 +1,20 @@
+uuid: 67f497cd-64bf-4e0d-8922-4f777b2b4065
+langcode: en
+status: true
+dependencies:
+  theme:
+    - circlek
+_core:
+  default_config_hash: PffmQ-ABSz5tFjWmVsR7NesunDnEivvopnJnBjl8KNE
+id: circlek_local_actions
+theme: circlek
+region: content
+weight: -10
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  provider: core
+  label_display: '0'
+visibility: {  }

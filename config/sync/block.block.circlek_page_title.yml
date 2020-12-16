@@ -1,0 +1,20 @@
+uuid: 3dcae0b9-1eeb-40b8-96bb-b8736efc1630
+langcode: en
+status: true
+dependencies:
+  theme:
+    - circlek
+_core:
+  default_config_hash: 8yptDf6WrXxeyevUz4nP5vfr7BtxQqCBMninhV2IJ1g
+id: circlek_page_title
+theme: circlek
+region: content
+weight: -30
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  provider: core
+  label_display: '0'
+visibility: {  }
