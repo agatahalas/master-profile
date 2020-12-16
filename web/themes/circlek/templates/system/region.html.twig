@@ -1,0 +1,39 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a region.
+ *
+ * Available variables:
+ * - content: The content for this region, typically blocks.
+ * - attributes: HTML attributes for the region <div>.
+ * - region: The name of the region variable as defined in the theme's
+ *   .info.yml file.
+ *
+ * @see template_preprocess_region()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if content %}
+  {% if wrapper_attributes %}
+    <div{{ wrapper_attributes }}>
+  {% endif %}
+  {% if inner_attributes %}
+    <div{{ inner_attributes }}>
+  {% endif %}
+  {% if container_attributes %}
+    <div{{ container_attributes }}>
+  {% endif %}
+  <div{{ attributes }}>
+    {{ content }}
+  </div>
+  {% if container_attributes %}
+    </div>
+  {% endif %}
+  {% if inner_attributes %}
+    </div>
+  {% endif %}
+  {% if wrapper_attributes %}
+    </div>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the circlek theme.
+ */
+
+use Drupal\block\Entity\Block;
+use Drupal\Core\Link;
+use Drupal\Core\Menu\MenuTreeParameters;
+use Drupal\Core\Site\Settings;
+use Drupal\Core\Template\Attribute;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
+use Drupal\file\Entity\File;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\file\Plugin\Field\FieldType\FileItem;
+use Drupal\Core\GeneratedLink;
+use Drupal\media\Entity\Media;
+use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
+use Drupal\node\Entity\Node;
+use Drupal\views\Views;
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function circlek_preprocess_html(array &$variables) {
+  // Add CSS class to body that represents
+  // specific site by using site_code.
+  //$sitecode = Settings::get('ck_site_code');
+  //$variables['attributes']['class'][] = 'ck-' . $sitecode;
+
+  if (Settings::get('ck_environment') === 'local') {
+    $variables['page']['#attached']['library'][] = 'circlek/local-global-css';
+    $variables['page']['#attached']['library'][] = 'circlek/local-global-scripts';
+  }
+  else {
+    $variables['page']['#attached']['library'][] = 'circlek/global-css';
+    $variables['page']['#attached']['library'][] = 'circlek/global-scripts';
+  }
+
+  // $variables['page']['#attached']['library'][] = 'core/drupal';
+  // $variables['page']['#attached']['library'][] = 'core/jquery';
+  // $variables['page']['#attached']['library'][] = 'core/jquery.once';
+
+  // Theme html part of maintanace page.
+  if (!empty($variables['page']['#theme']) && $variables['page']['#theme'] == 'maintenance_page') {
+    $variables['attributes']['class'][] = 'uk-position-center';
+    $variables['attributes']['class'][] = 'uk-text-center';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for region.
+ */
+function circlek_preprocess_region(array &$variables) {
+  $wrapper_attributes = new Attribute();
+
+  // Add container and other classes to top region.
+  if ($variables['region'] == 'top') {
+    $wrapper_attributes->addClass('uk-container');
+    $wrapper_attributes->addClass('uk-container-large');
+    $wrapper_attributes->addClass('uk-padding-remove-left');
+    $wrapper_attributes->addClass('uk-padding-remove-right');
+    $wrapper_attributes->addClass('top-region');
+    $variables['wrapper_attributes'] = $wrapper_attributes;
+    $variables['attributes']['class'] = [
+      'uk-flex',
+      'uk-container',
+      'uk-margin-auto',
+    ];
+    $variables['attributes']['uk-grid'] = TRUE;
+  }
+
+  // Add container and other classes to header region.
+  if ($variables['region'] == 'header') {
+    $wrapper_attributes->addClass('uk-container');
+    $wrapper_attributes->addClass('header-region');
+    $variables['wrapper_attributes'] = $wrapper_attributes;
+    $variables['attributes']['class'] = [
+      'uk-padding-small',
+      'uk-padding-remove-left',
+      'uk-padding-remove-right',
+      'uk-clearfix',
+    ];
+  }
+
+  // Add CSS classes to content region.
+  if ($variables['region'] == 'content') {
+    $variables['attributes']['class'] = [
+      'content-region',
+    ];
+  }
+
+  // Add container and other classes to footer region.
+  if ($variables['region'] == 'footer') {
+    $wrapper_attributes->addClass('uk-container');
+    $wrapper_attributes->addClass('uk-container-large');
+    $wrapper_attributes->addClass('footer-region');
+    $variables['wrapper_attributes'] = $wrapper_attributes;
+    $variables['attributes']['class'] = [
+      'uk-padding',
+      'footer-region-inner',
+    ];
+
+  }
+
+  // Add container and other classes to bottom region.
+  if ($variables['region'] == 'bottom') {
+    $wrapper_attributes->addClass('uk-container');
+    $wrapper_attributes->addClass('uk-container-large');
+    $wrapper_attributes->addClass('bottom-region');
+    $variables['wrapper_attributes'] = $wrapper_attributes;
+    $variables['attributes']['uk-grid'] = TRUE;
+
+    $inner_attributes = new Attribute();
+    $inner_attributes->addClass('bottom-region-inner');
+    $variables['inner_attributes'] = $inner_attributes;
+
+    $container_attributes = new Attribute();
+    $container_attributes->addClass('uk-container');
+    $variables['container_attributes'] = $container_attributes;
+  }
+
+  // Add container class to admin_area region.
+  if ($variables['region'] == 'admin_area') {
+    $wrapper_attributes->addClass('uk-container');
+    $variables['wrapper_attributes'] = $wrapper_attributes;
+  }
+}
+
+/**
+ * Implements template_preprocess_page().
+ */
+function circlek_preprocess_page(&$variables) {
+  // Add uk-container CSS class to all `<main>`
+  // tags across the page except landing_page and homepage pages.
+  $variables['attributes']['role'] = 'main';
+  $variables['attributes']['class'][] = 'uk-container';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for Block document templates.
+ */
+function circlek_preprocess_block(array &$variables) {
+  // Preprocess branding block.
+  if (!empty($variables['plugin_id']) && $variables['plugin_id'] == 'system_branding_block') {
+    global $base_url;
+    unset($variables['site_name']);
+    $variables['#cache']['max-age'] = 0;
+
+    // Desktop logo dimensions.
+    $variables['desktop_width'] = '130';
+    $variables['desktop_height'] = '';
+
+    // Mobile logo path.
+    $variables['site_logo_mobile'] = $base_url . '/' . drupal_get_path('theme', 'circlek') . '/assets/images/logo-mobile.svg';
+    // Mobile logo dimensions.
+    $variables['mobile_width'] = '60';
+    $variables['mobile_height'] = '';
+
+    $variables['attributes']['class'][] = 'ck-site-branding-block';
+    // Float logo left.
+    $variables['attributes']['class'][] = 'uk-float-left';
+  }
+}

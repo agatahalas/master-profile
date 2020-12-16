@@ -1,0 +1,6 @@
+[submodule "web/themes/circlek/assets/css/cksites-uikit"]
+	path = web/themes/circlek/assets/css/cksites-uikit
+	url = git@github.com:circlekeurope/cksites-uikit.git
+[submodule "web/themes/circlek/assets/uikit"]
+	path = web/themes/circlek/assets/uikit
+	url = git@github.com:circlekeurope/cksites-uikit.git
