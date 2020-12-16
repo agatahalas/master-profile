@@ -1,5 +1,6 @@
 module:
   block: 0
+  cp_links: 0
   dblog: 0
   dynamic_page_cache: 0
   field: 0

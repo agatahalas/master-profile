@@ -1,0 +1,27 @@
+uuid: 7bcd10d3-7371-4bd1-9107-12110f1376a4
+langcode: en
+status: true
+dependencies:
+  module:
+    - cp_links
+  theme:
+    - circlek
+id: links
+theme: circlek
+region: sidebar_first
+weight: 0
+provider: null
+plugin: cp_links
+settings:
+  id: cp_links
+  label: Links
+  provider: cp_links
+  label_display: '0'
+  link_facebook: ''
+  link_twitter: ''
+  link_instragram: ''
+  link_linkedin: ''
+  link_pinterest: ''
+  link_youtube: ''
+  link_vk: ''
+visibility: {  }
