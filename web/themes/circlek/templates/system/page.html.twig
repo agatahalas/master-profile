@@ -56,21 +56,32 @@
 <main{{ attributes }}>
   <a id="main-content" tabindex="-1"></a>{# link is in html.html.twig #}
 
-  <div class="layout-content">
-    {{ page.content }}
-  </div>{# /.layout-content #}
-
-  {% if page.sidebar_first %}
-    <aside class="layout-sidebar-first" role="complementary">
+  {% if page.sidebar_first or page.sidebar_second %}
+    <div uk-grid>
+  {% endif %}
+    {% if page.sidebar_first %}
+      <aside class="uk-child-width-1-3" role="complementary">
       {{ page.sidebar_first }}
-    </aside>
-  {% endif %}
+      </aside>
+    {% endif %}
 
-  {% if page.sidebar_second %}
-    <aside class="layout-sidebar-second" role="complementary">
-      {{ page.sidebar_second }}
-    </aside>
+    {% if page.sidebar_first or page.sidebar_second %}
+      <div class="layout-content uk-width-expand">
+    {% else %}
+      <div class="layout-content">
+    {% endif %}
+    {{ page.content }}
+    </div>
+
+    {% if page.sidebar_second %}
+      <aside class="uk-child-width-1-3" role="complementary">
+        {{ page.sidebar_second }}
+      </aside>
+    {% endif %}
+  {% if page.sidebar_first or page.sidebar_second %}
+    </div>
   {% endif %}
+  
 
 </main>
 

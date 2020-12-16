@@ -28,8 +28,7 @@ use Drupal\views\Views;
 function circlek_preprocess_html(array &$variables) {
   // Add CSS class to body that represents
   // specific site by using site_code.
-  //$sitecode = Settings::get('ck_site_code');
-  //$variables['attributes']['class'][] = 'ck-' . $sitecode;
+  $variables['attributes']['class'][] = 'cp';
 
   if (Settings::get('ck_environment') === 'local') {
     $variables['page']['#attached']['library'][] = 'circlek/local-global-css';
@@ -39,10 +38,6 @@ function circlek_preprocess_html(array &$variables) {
     $variables['page']['#attached']['library'][] = 'circlek/global-css';
     $variables['page']['#attached']['library'][] = 'circlek/global-scripts';
   }
-
-  // $variables['page']['#attached']['library'][] = 'core/drupal';
-  // $variables['page']['#attached']['library'][] = 'core/jquery';
-  // $variables['page']['#attached']['library'][] = 'core/jquery.once';
 
   // Theme html part of maintanace page.
   if (!empty($variables['page']['#theme']) && $variables['page']['#theme'] == 'maintenance_page') {
