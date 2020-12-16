@@ -1,0 +1,7 @@
+name: 'CP Links'
+description: Show links to various sections
+core_version_requirement: ^8 || ^9
+package: 'cp'
+type: module
+version: '8.x-1.0'
+

@@ -791,3 +791,23 @@ $databases['default']['default'] = array (
 );
 
 $settings['config_sync_directory'] = '../config/sync';
+
+/**
+ * THIS NEEDS TO BE AT THE VERY END OF THE FILE AS IT OVERRIDES VARIABLES
+ * DEFINED ABOVE.
+ *
+ * Load local development override configuration, if available.
+ *
+ * Load setting files based on ck_environment value.
+ * This loads two additional files per environment. One is located in profile
+ * repository in: ./environment_settings/settings.ENVIRONMENT_NAME.php
+ * another one is located in site repository and it's the last chance to
+ * adjust settings ./web/sites/default/settings.ENVIRONMENT_NAME.php
+ */
+$settings['master_profile_environment_settings_file'] = $app_root . '/sites/default/settings.local.php';
+
+if (file_exists($settings['master_profile_environment_settings_file'])) {
+  include $settings['master_profile_environment_settings_file'];
+}
+
+
