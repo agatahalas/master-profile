@@ -4,7 +4,6 @@ namespace Drupal\cp_links\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -21,7 +20,6 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
    * {@inheritdoc}
    */
   public function build() {
-    $url = Url::fromUri('http://test.me/go/here');
     $build = [
       '#theme' => 'item_list',
       '#items' => [
@@ -31,7 +29,11 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
           '#items' => [
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'account-overview',
+                ],
+              ]),
               '#title' => $this->t('Account overview'),
             ],
           ],
@@ -42,22 +44,38 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
           '#items' => [
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'carwash-subscription',
+                ],
+              ]),
               '#title' => $this->t('Carwash subscription'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'click-and-collect',
+                ],
+              ]),
               '#title' => $this->t('Click and collect'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'fuel',
+                ],
+              ]),
               '#title' => $this->t('Fuel'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'electric-vehicle',
+                ],
+              ]),
               '#title' => $this->t('Electric vehicle'),
             ],
           ],
@@ -68,18 +86,30 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
           '#items' => [
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'payment-methods',
+                ],
+              ]),
               '#title' => $this->t('Payment methods'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'transactions',
+                ],
+              ]),
               '#title' => $this->t('Transactions'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
-              '#title' => $this->t('Invoice date'),
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'invoice-data',
+                ],
+              ]),
+              '#title' => $this->t('Invoice data'),
             ],
           ],
         ],
@@ -89,18 +119,31 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
           '#items' => [
             [
               '#type' => 'link',
-              '#url' => $url,
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'partner-agreements',
+                ],
+              ]),
               '#title' => $this->t('Partner agreements'),
             ],
             [
               '#type' => 'link',
-              '#url' => $url,
-              '#title' => $this->t('About ExtraClub'),
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'about-extraclub',
+                ],
+              ]),
+              '#title' => //$this->t('About ExtraClub'), 
+              [
+                '#markup' => '<span>dupa</span>'
+              ]
             ],
           ],
         ],
       ],
     ];
+
+    //$build['#items'][3]['#items'][0]['#url']->setOption('attributes', ['pipa' => TRUE]);
 
     return $build;
   }
