@@ -21,5 +21,3 @@ cp_authentication.password:
     _title: 'Reset your password'
   requirements:
     _access: 'TRUE'
-
-
