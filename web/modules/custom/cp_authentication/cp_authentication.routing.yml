@@ -1,0 +1,23 @@
+cp_authentication.login:
+  path: '/customer/login'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerLoginForm'
+    _title: 'Please log in'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.register:
+  path: '/customer/register'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerRegisterForm'
+    _title: 'Welcome to Circle K'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.password:
+  path: '/customer/password'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerPasswordForm'
+    _title: 'Reset your password'
+  requirements:
+    _access: 'TRUE'

@@ -188,3 +188,33 @@ function circlek_add_uikit_icon(&$items) {
     }
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function circlek_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $form['#attributes']['class'][] = 'ck-form';
+}
+
+/**
+ * Implements hook_preprocess_input().
+ */
+function circlek_preprocess_input(&$variables) {
+  if ($variables['element']['#type'] == 'checkbox') {
+    $variables['attributes']['class'][] = 'uk-checkbox';
+  }
+  if (in_array($variables['element']['#type'], ['textfield', 'email', 'file', 'password'])) {
+    $variables['attributes']['class'][] = 'uk-input';
+  }
+  if ($variables['element']['#type'] == 'submit') {
+    $variables['attributes']['class'][] = 'uk-button';
+    $variables['attributes']['class'][] = 'uk-button-secondary';
+  }
+}
+
+/**
+ * Implements template_preprocess_select().
+ */
+function circlek_preprocess_select(&$variables) {
+  $variables['attributes']['class'][] = 'uk-select';
+}
