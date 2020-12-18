@@ -60,7 +60,7 @@ class CustomerLoginForm extends FormBase {
 
     $form['signup_info'] = [
       '#type' => 'item',
-      '#markup' => $this->t('Don\'t have an account?') . '<br>' . Link::fromTextAndUrl(t('Create'),  Url::fromRoute('cp_authentication.register'))->toString(),
+      '#markup' => $this->t('Don\'t have an account?') . '<br>' . Link::fromTextAndUrl(t('Create'), Url::fromRoute('cp_authentication.register'))->toString(),
     ];
 
     return $form;

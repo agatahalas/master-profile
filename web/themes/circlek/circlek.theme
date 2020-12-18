@@ -165,8 +165,6 @@ function circlek_preprocess_block(array &$variables) {
     $variables['content']['#attributes']['class'][] = 'uk-list';
     $variables['content']['#attributes']['class'][] = 'uk-text-bold';
     $variables['content']['#attributes']['class'][] = 'uk-list-large';
-    
-    //dd($variables['content']['#items']);
   }
 }
 
@@ -207,7 +205,7 @@ function circlek_preprocess_input(&$variables) {
   if ($variables['element']['#type'] == 'checkbox') {
     $variables['attributes']['class'][] = 'uk-checkbox';
   }
-  if (in_array($variables['element']['#type'], ['textfield', 'email', 'file', 'password'])) {
+  if (in_array($variables['element']['#type'], ['textfield', 'email', 'file', 'password', 'tel'])) {
     $variables['attributes']['class'][] = 'uk-input';
   }
   if ($variables['element']['#type'] == 'submit') {

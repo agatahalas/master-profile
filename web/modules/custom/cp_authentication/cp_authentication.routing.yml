@@ -6,11 +6,35 @@ cp_authentication.login:
   requirements:
     _access: 'TRUE'
 
-cp_authentication.register:
-  path: '/customer/register'
+cp_authentication.register_one:
+  path: '/customer/register-one'
   defaults:
-    _form: 'Drupal\cp_authentication\Form\CustomerRegisterForm'
+    _form: 'Drupal\cp_authentication\Form\CustomerRegisterOneForm'
     _title: 'Welcome to Circle K'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.register_two:
+  path: '/customer/register-two'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerRegisterTwoForm'
+    _title: 'Enter code'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.register_three:
+  path: '/customer/register-three'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerRegisterThreeForm'
+    _title: 'Contact information'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.register_four:
+  path: '/customer/register-four'
+  defaults:
+    _form: 'Drupal\cp_authentication\Form\CustomerRegisterFourForm'
+    _title: 'Terms & Conditions'
   requirements:
     _access: 'TRUE'
 
@@ -19,5 +43,12 @@ cp_authentication.password:
   defaults:
     _form: 'Drupal\cp_authentication\Form\CustomerPasswordForm'
     _title: 'Reset your password'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.send_code:
+  path: '/customer/send-code'
+  defaults:
+    _title: 'Send code'
   requirements:
     _access: 'TRUE'
