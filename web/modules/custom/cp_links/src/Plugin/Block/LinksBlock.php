@@ -31,7 +31,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'account-overview',
+                  'id' => 'heart',
                 ],
               ]),
               '#title' => $this->t('Account overview'),
@@ -116,6 +116,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
         [
           '#theme' => 'item_list',
           '#title' => $this->t('Extra club'),
+          
           '#items' => [
             [
               '#type' => 'link',
@@ -126,24 +127,12 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               ]),
               '#title' => $this->t('Partner agreements'),
             ],
-            [
-              '#type' => 'link',
-              '#url' => Url::fromUri('http://test.me/go/here', [
-                'attributes' => [
-                  'id' => 'about-extraclub',
-                ],
-              ]),
-              '#title' => //$this->t('About ExtraClub'), 
-              [
-                '#markup' => '<span>dupa</span>'
-              ]
-            ],
           ],
         ],
       ],
     ];
 
-    //$build['#items'][3]['#items'][0]['#url']->setOption('attributes', ['pipa' => TRUE]);
+    //dd($build['#items'][3]['#items'][1]['#url']->toRenderArray());
 
     return $build;
   }

@@ -161,29 +161,33 @@ function circlek_preprocess_block(array &$variables) {
   }
 
   if (!empty($variables['plugin_id']) && $variables['plugin_id'] == 'cp_links') {
-   
     circlek_add_uikit_icon($variables['content']['#items']);
+    $variables['content']['#attributes']['class'][] = 'uk-list';
+    $variables['content']['#attributes']['class'][] = 'uk-text-bold';
+    $variables['content']['#attributes']['class'][] = 'uk-list-large';
+    
     //dd($variables['content']['#items']);
-
-    // if (!empty($variables['content']['#items']) && is_array($variables['content']['#items'])) {
-    //   foreach ($variables['content']['#items'] as $item_key => $item_value) {
-    //     if ($item_value['#items'])
-    //   }
-    // }
   }
 }
 
 function circlek_add_uikit_icon(&$items) {
   if (!empty($items) && is_array($items)) {
-    foreach ($items as $item_key => $item_value) {
-      if (isset($item_value['#theme']) && $item_value['#theme'] == 'item_list' && is_array($item_value['#items'])) {
-        circlek_add_uikit_icon($item_value['#items']);
-      }
+    foreach ($items as $item_key => &$item_value) {
       if (isset($item_value['#type']) && $item_value['#type'] == 'link') {
-        $current_attributes = $item_value['#url']->getOption('attributes');
-        //$current_attributes['uk-icon'] = 'icon: ' . $current_attributes['id'];
-        $current_attributes['uk-icon'] = 'icon: heart';
-        $item_value['#url']->setOption('attributes', $current_attributes);
+        $attributes = $item_value['#url']->getOption('attributes');
+        $item_value['#title'] = [
+          '#markup' => '<span class="uk-margin-small-right" uk-icon="' . $attributes['id'] . '"></span>' . (string) $items[$item_key]['#title'],
+        ];
+      }
+      else {
+        $item_value['#title'] = [
+          '#markup' => '<span class="uk-text-uppercase uk-text-small uk-text-muted">' . $item_value['#title'] . '</span>',
+        ];
+        $item_value['#attributes']['class'][] = 'uk-list';
+        $item_value['#attributes']['class'][] = 'uk-padding-remove-left';
+        $item_value['#attributes']['class'][] = 'uk-list-large';
+
+        circlek_add_uikit_icon($item_value['#items']);
       }
     }
   }
