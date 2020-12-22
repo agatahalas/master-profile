@@ -8,3 +8,4 @@ web/sites/*/files
 web/sites/*/private
 
 web/core
+web/modules/contrib

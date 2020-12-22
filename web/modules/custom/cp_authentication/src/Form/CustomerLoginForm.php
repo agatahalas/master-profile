@@ -20,9 +20,16 @@ class CustomerLoginForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+
+    $form['login'] = [
+      '#type' => 'item',
+      //'#markup' => Link::fromTextAndUrl(t('Forgot password?'), Url::fromUri('https://test-circlekid-core-stable.test.gneis.io/api/v1/oauth/authorize?client_id=a418d653-a356-4d54-af20-28a9096d8c0f&response_type=code&scope=USER', []),
+      '#markup' => '<a href="https://test-circlekid-core-stable.test.gneis.io/api/v1/oauth/authorize?client_id=a418d653-a356-4d54-af20-28a9096d8c0f&response_type=code&scope=USER&redirect_uri=https://master-profile.lndo.site/customer/get-token">' . $this->t('Log in') . '</a>',
+    ];
+
     $form['description'] = [
       '#type' => 'markup',
-      '#markup' => $this->t('To continue use your Circle K ID to log in'),
+      '#markup' => $this->t('To asdas continue use your Circle K ID to log in'),
     ];
 
     $form['email'] = [
@@ -60,7 +67,7 @@ class CustomerLoginForm extends FormBase {
 
     $form['signup_info'] = [
       '#type' => 'item',
-      '#markup' => $this->t('Don\'t have an account?') . '<br>' . Link::fromTextAndUrl(t('Create'), Url::fromRoute('cp_authentication.register'))->toString(),
+      '#markup' => $this->t('Don\'t have an account?') . '<br>' . Link::fromTextAndUrl(t('Create'), Url::fromRoute('cp_authentication.register_one'))->toString(),
     ];
 
     return $form;
