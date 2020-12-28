@@ -6,8 +6,24 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class CustomerLoginForm extends FormBase {
+  /**
+   * A Ckid connector service.
+   *
+   * @var \Drupal\cp_authentication\CkidConnectorService
+   */
+  protected $ckidConnector;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $instance = parent::create($container);
+    $instance->ckidConnector = $container->get('cp_authentication.ckid_connector');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -20,10 +36,13 @@ class CustomerLoginForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $authorize_link = $this->ckidConnector->getAuthorizeLink();
+
     $form['kid_login'] = [
       '#type' => 'item',
-      '#markup' => '<a class="button uk-button uk-button-secondary" href="https://test-circlekid-core-stable.test.gneis.io/api/v1/oauth/authorize?client_id=a418d653-a356-4d54-af20-28a9096d8c0f&response_type=code&scope=USER&redirect_uri=https://master-profile.lndo.site/customer/get-token">' . $this->t('CKID Log in') . '</a>',
+      '#markup' => '<a class="button uk-button uk-button-secondary" href="' . $authorize_link .'">' . $this->t('CKID Log in') . '</a>',
     ];
+
 
     $form['description'] = [
       '#type' => 'markup',
