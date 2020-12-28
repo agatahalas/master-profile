@@ -4,6 +4,7 @@
 namespace Drupal\cp_authentication;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Url;
 
 class CkidConnectorService {
   /**
@@ -67,7 +68,18 @@ class CkidConnectorService {
    * @return string
    */
   public function getAuthorizeLink() {
-    return $this->getApiUrl() . '/api/v1/oauth/authorize?client_id=' . $this->clientId . '&response_type=code&scope=USER&redirect_uri=https://master-profile.lndo.site/customer/get-token';
+    $uri = $this->getApiUrl() . '/api/v1/oauth/authorize';
+    $option = [
+      'query' => [
+        'client_id' => $this->clientId,
+        'response_type' => 'code',
+        'scope' => 'USER',
+        'redirect_uri' => Url::fromRoute('cp_authentication.get_token', [], ['absolute' => TRUE, 'https' => TRUE])->toString(),
+      ],
+    ];
+    $request_url = Url::fromUri($uri, $option)->toString();
+
+    return $request_url;
   }
 
 }
