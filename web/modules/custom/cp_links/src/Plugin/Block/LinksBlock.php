@@ -116,7 +116,6 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
         [
           '#theme' => 'item_list',
           '#title' => $this->t('Extra club'),
-          
           '#items' => [
             [
               '#type' => 'link',
@@ -127,12 +126,19 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               ]),
               '#title' => $this->t('Partner agreements'),
             ],
+            [
+              '#type' => 'link',
+              '#url' => Url::fromUri('http://test.me/go/here', [
+                'attributes' => [
+                  'id' => 'about-extra-club',
+                ],
+              ]),
+              '#title' => $this->t('About Extra Club'),
+            ],
           ],
         ],
       ],
     ];
-
-    //dd($build['#items'][3]['#items'][1]['#url']->toRenderArray());
 
     return $build;
   }

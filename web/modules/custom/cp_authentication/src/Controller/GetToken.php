@@ -3,6 +3,7 @@
 namespace Drupal\cp_authentication\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * An example controller.
@@ -10,7 +11,7 @@ use Drupal\Core\Controller\ControllerBase;
 class GetToken extends ControllerBase {
 
   /**
-   * Returns a render-able array for a test page.
+   * Returns a token.
    */
   public function content() {
     $build = [
@@ -51,7 +52,7 @@ class GetToken extends ControllerBase {
       }
     }
     catch (RequestException $e) {
-      return FALSE;
+      $build['#markup'] = $this->t('Exception: ' . $e->getMessage());
     }
 
     return $build;
