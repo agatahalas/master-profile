@@ -3,7 +3,10 @@
 namespace Drupal\cp_authentication\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\cp_authentication\CkidConnectorService;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * An example controller.
@@ -11,45 +14,49 @@ use GuzzleHttp\Exception\RequestException;
 class GetToken extends ControllerBase {
 
   /**
+   * The CKID Connector service.
+   *
+   * @var \Drupal\cp_authentication\CkidConnectorService
+   */
+  protected $ckidConnectorService;
+
+  /**
+   * Request service.
+   *
+   * @var mixed
+   */
+  protected $request;
+
+  /**
+   * GetToken constructor.
+   */
+  public function __construct(CkidConnectorService $ckid_connector_service) {
+    $this->ckidConnectorService = $ckid_connector_service;
+    $this->request = \Drupal::request();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('cp_authentication.ckid_connector')
+    );
+  }
+
+  /**
    * Returns a token.
    */
   public function content() {
     $build = [
-      '#markup' => $this->t('Hello World!'),
+      '#markup' => $this->t('Get token'),
     ];
 
-    $request = \Drupal::request();
-    $code = $request->query->get('code');
-
-    $uri = 'https://test-circlekid-core-stable.test.gneis.io/api/v1/oauth/token';
-
-    $username = 'a418d653-a356-4d54-af20-28a9096d8c0f';
-    $pass = '166ba7d17ccfbea1c2120e0a7830d41f';
-    $auth = 'Basic ' . base64_encode($username . ':' . $pass);
+    $code = $this->request->query->get('code');
 
     try {
-      $response = \Drupal::httpClient()->post($uri, [
-        'headers' => [
-          'Accept' => 'application/json',
-          'Content-Type' => 'application/x-www-form-urlencoded',
-          'Authorization' => $auth,
-        ],
-        'form_params' => [
-          'code' => $code,
-          'grant_type' => 'authorization_code',
-          'scope' => 'USER',
-          'redirect_uri' => 'https://master-profile.lndo.site/customer/get-token',
-        ],
-      ]);
-
-      $body = json_decode($response->getBody()->getContents());
-
-      if (!empty($body->access_token)) {
-        user_cookie_save([
-          'kid_token' => $body->access_token,
-        ]);
-        return $this->redirect('cp_authentication.user_info');
-      }
+      $this->ckidConnectorService->getToken($code);
+      return $this->redirect('cp_authentication.user_info');
     }
     catch (RequestException $e) {
       $build['#markup'] = $this->t('Exception: ' . $e->getMessage());
