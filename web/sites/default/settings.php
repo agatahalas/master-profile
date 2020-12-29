@@ -790,6 +790,16 @@ $databases['default']['default'] = array (
   'driver' => 'mysql',
 );
 
+/**
+ * API master profile credentials.
+ */
+$settings['master_profile']['api_url'] = getenv('API_URL');
+$settings['master_profile']['client_id'] = getenv('CLIENT_ID');
+$settings['master_profile']['client_secret'] = getenv('CLIENT_SECRET');
+
+/**
+ * Sync directory.
+ */
 $settings['config_sync_directory'] = '../config/sync';
 
 /**

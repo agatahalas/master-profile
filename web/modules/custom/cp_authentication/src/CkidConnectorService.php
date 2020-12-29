@@ -8,7 +8,7 @@ use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use GuzzleHttp\ClientInterface;
-
+use Drupal\Core\Site\Settings;
 class CkidConnectorService {
 
   /**
@@ -58,12 +58,10 @@ class CkidConnectorService {
    */
   public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $http_client) {
     $this->config = $config_factory->get('cp_authentication.settings');
-
-    $this->apiUrl = $this->config->get('apiUrl');
-    $this->clientId = $this->config->get('clientId');
-    $this->clientSecret = $this->config->get('clientSecret');
-
-    //$this->httpClient = \Drupal::httpClient();
+    $api_settings = Settings::get('master_profile');
+    $this->apiUrl = $api_settings['api_url'];
+    $this->clientId = $api_settings['client_id'];
+    $this->clientSecret = $api_settings['client_secret'];
     $this->httpClient = $http_client;
   }
 
@@ -80,7 +78,6 @@ class CkidConnectorService {
    * @return string
    */
   public function getAuthorizeLink() {
-    //dd($this->requestStack->getCurrentRequest());
     $uri = $this->getApiUrl() . '/api/v1/oauth/authorize';
     $option = [
       'query' => [
