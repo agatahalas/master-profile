@@ -87,7 +87,7 @@ class UserInfo extends ControllerBase {
         }
       }
       catch (RequestException $e) {
-        $build['#markup'] = $this->t('Exception: ' . $e->getMessage());
+        $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
       }
     }
     return $build;
@@ -96,8 +96,11 @@ class UserInfo extends ControllerBase {
   /**
    * Prepare user data to display.
    *
-   * @param $data
+   * @param object $data
+   *   User data.
+   *
    * @return array
+   *   Processed user data.
    */
   private function prepareUserInfo($data) {
     if (isset($data->country_code)) {

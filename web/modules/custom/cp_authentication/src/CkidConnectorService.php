@@ -7,6 +7,10 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
 use GuzzleHttp\ClientInterface;
 use Drupal\Core\Site\Settings;
+
+/**
+ * Circlek ID connector service.
+ */
 class CkidConnectorService {
 
   /**
@@ -67,6 +71,7 @@ class CkidConnectorService {
    * Get authorize link.
    *
    * @return string
+   *   String with request url.
    */
   public function getAuthorizeLink() {
     $uri = $this->getApiUrl() . '/api/v1/oauth/authorize';
@@ -86,14 +91,15 @@ class CkidConnectorService {
   /**
    * Get token.
    *
-   * @param $code
+   * @param string $code
+   *   Code to exchange for token.
+   *
    * @return mixed
+   *   Return mixed.
    */
   public function getToken($code) {
     $uri = $this->getApiUrl() . '/api/v1/oauth/token';
-    //dd($this->requestStack);
-    // $current_request = $this->httpClient->getCurrentRequest();
-    // dd($current_request);
+
     $response = $this->httpClient->post($uri, [
       'headers' => [
         'Accept' => 'application/json',
