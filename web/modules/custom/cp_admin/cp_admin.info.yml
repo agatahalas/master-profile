@@ -1,0 +1,6 @@
+name: 'CP Admin'
+type: module
+description: 'Admin module. Provide various admin improvements.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: 'cp'

@@ -9,7 +9,7 @@ dependencies:
 id: links
 theme: circlek
 region: sidebar_first
-weight: 0
+weight: -4
 provider: null
 plugin: cp_links
 settings:
@@ -24,4 +24,10 @@ settings:
   link_pinterest: ''
   link_youtube: ''
   link_vk: ''
-visibility: {  }
+visibility:
+  user:
+    id: user
+    roles: 1
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

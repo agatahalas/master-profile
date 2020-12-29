@@ -1,0 +1,35 @@
+uuid: ffe4cc60-a070-42be-a781-810d749e66a1
+langcode: en
+status: true
+dependencies:
+  module:
+    - cp_admin
+    - cp_links
+    - user
+  theme:
+    - circlek
+id: admindashboardlink
+theme: circlek
+region: admin_area
+weight: 0
+provider: null
+plugin: cp_admin_dashboard_link
+settings:
+  id: cp_admin_dashboard_link
+  label: 'Admin dashboard link'
+  provider: cp_admin
+  label_display: '0'
+visibility:
+  user:
+    id: user
+    roles: 0
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
