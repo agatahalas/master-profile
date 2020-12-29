@@ -38,6 +38,13 @@ class CkidConnectorService {
   protected $clientSecret;
 
   /**
+   * Request service.
+   *
+   * @var mixed
+   */
+  protected $request;
+
+  /**
    * Config.
    *
    * @var mixed
@@ -91,9 +98,6 @@ class CkidConnectorService {
    */
   public function getToken($code) {
     $uri = $this->getApiUrl() . '/api/v1/oauth/token';
-    //dd($this->requestStack);
-    // $current_request = $this->httpClient->getCurrentRequest();
-    // dd($current_request);
     $response = $this->httpClient->post($uri, [
       'headers' => [
         'Accept' => 'application/json',
@@ -122,6 +126,26 @@ class CkidConnectorService {
     else {
       return FALSE;
     }
+  }
+
+  /**
+   * Get user info.
+   *
+   * @param $token
+   * @return mixed|null
+   */
+  public function getUserInfo($token) {
+    $uri = $this->getApiUrl() . '/api/v2/oauth/userinfo';
+    $response = $this->httpClient->get($uri, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Authorization' => 'Bearer ' . $token,
+      ],
+    ]);
+
+    $body = json_decode($response->getBody()->getContents());
+
+    return $body;
   }
 
 }

@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Locale\CountryManager;
 use Drupal\Core\Url;
+use Drupal\cp_authentication\CkidConnectorService;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +16,13 @@ use GuzzleHttp\ClientInterface;
  * An example controller.
  */
 class UserInfo extends ControllerBase {
+
+  /**
+   * The CKID Connector service.
+   *
+   * @var \Drupal\cp_authentication\CkidConnectorService
+   */
+  protected $ckidConnectorService;
 
   /**
    * The request stack.
@@ -33,7 +41,8 @@ class UserInfo extends ControllerBase {
   /**
    * Construct.
    */
-  public function __construct(RequestStack $request_stack, ClientInterface $http_client) {
+  public function __construct(CkidConnectorService $ckid_connector_service, RequestStack $request_stack, ClientInterface $http_client) {
+    $this->ckidConnectorService = $ckid_connector_service;
     $this->requestStack = $request_stack;
     $this->httpClient = $http_client;
   }
@@ -43,6 +52,7 @@ class UserInfo extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('cp_authentication.ckid_connector'),
       $container->get('request_stack'),
       $container->get('http_client')
     );
@@ -57,19 +67,11 @@ class UserInfo extends ControllerBase {
     ];
 
     // Cookie value.
-    $value = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
+    $token = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
 
-    if ($value) {
+    if ($token) {
       try {
-        $uri = 'https://test-circlekid-core-stable.test.gneis.io/api/v2/oauth/userinfo';
-        $response = $this->httpClient->get($uri, [
-          'headers' => [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $value,
-          ],
-        ]);
-
-        $body = json_decode($response->getBody()->getContents());
+        $body = $this->ckidConnectorService->getUserInfo($token);
         $user_info = $this->prepareUserInfo($body);
 
         $build = [
@@ -87,7 +89,7 @@ class UserInfo extends ControllerBase {
         }
       }
       catch (RequestException $e) {
-        $build['#markup'] = $this->t('Exception: ' . $e->getMessage());
+        $build['#markup'] = $$this->t('Exception: @message', ['@message' => $e->getMessage()]);
       }
     }
     return $build;
