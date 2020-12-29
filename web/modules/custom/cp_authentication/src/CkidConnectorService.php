@@ -6,8 +6,18 @@ namespace Drupal\cp_authentication;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\RequestStack;
+use GuzzleHttp\ClientInterface;
 
 class CkidConnectorService {
+
+  /**
+   * The HTTP client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected $httpClient;
+
   /**
    * API base url.
    *
@@ -29,12 +39,12 @@ class CkidConnectorService {
    */
   protected $clientSecret;
 
-  /**
-   * HttpClient service.
-   *
-   * @var mixed
-   */
-  protected $httpClient;
+  // /**
+  //  * HttpClient service.
+  //  *
+  //  * @var mixed
+  //  */
+  // protected $httpClient;
 
   /**
    * Config.
@@ -46,14 +56,15 @@ class CkidConnectorService {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory) {
+  public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $http_client) {
     $this->config = $config_factory->get('cp_authentication.settings');
 
     $this->apiUrl = $this->config->get('apiUrl');
     $this->clientId = $this->config->get('clientId');
     $this->clientSecret = $this->config->get('clientSecret');
 
-    $this->httpClient = \Drupal::httpClient();
+    //$this->httpClient = \Drupal::httpClient();
+    $this->httpClient = $http_client;
   }
 
   /**
@@ -69,6 +80,7 @@ class CkidConnectorService {
    * @return string
    */
   public function getAuthorizeLink() {
+    //dd($this->requestStack->getCurrentRequest());
     $uri = $this->getApiUrl() . '/api/v1/oauth/authorize';
     $option = [
       'query' => [
@@ -91,7 +103,9 @@ class CkidConnectorService {
    */
   public function getToken($code) {
     $uri = $this->getApiUrl() . '/api/v1/oauth/token';
-
+    //dd($this->requestStack);
+    // $current_request = $this->httpClient->getCurrentRequest();
+    // dd($current_request);
     $response = $this->httpClient->post($uri, [
       'headers' => [
         'Accept' => 'application/json',

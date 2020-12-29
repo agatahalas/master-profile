@@ -7,11 +7,19 @@ use Drupal\cp_authentication\CkidConnectorService;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * An example controller.
  */
 class GetToken extends ControllerBase {
+
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
 
   /**
    * The CKID Connector service.
@@ -21,18 +29,11 @@ class GetToken extends ControllerBase {
   protected $ckidConnectorService;
 
   /**
-   * Request service.
-   *
-   * @var mixed
-   */
-  protected $request;
-
-  /**
    * GetToken constructor.
    */
-  public function __construct(CkidConnectorService $ckid_connector_service) {
+  public function __construct(CkidConnectorService $ckid_connector_service, RequestStack $request_stack) {
     $this->ckidConnectorService = $ckid_connector_service;
-    $this->request = \Drupal::request();
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -40,7 +41,8 @@ class GetToken extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('cp_authentication.ckid_connector')
+      $container->get('cp_authentication.ckid_connector'),
+      $container->get('request_stack')
     );
   }
 
@@ -52,14 +54,14 @@ class GetToken extends ControllerBase {
       '#markup' => $this->t('Get token'),
     ];
 
-    $code = $this->request->query->get('code');
+    $code = $this->requestStack->getCurrentRequest()->query->get('code');
 
     try {
       $this->ckidConnectorService->getToken($code);
       return $this->redirect('cp_authentication.user_info');
     }
     catch (RequestException $e) {
-      $build['#markup'] = $this->t('Exception: ' . $e->getMessage());
+      $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
     }
 
     return $build;
