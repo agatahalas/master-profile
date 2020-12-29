@@ -7,11 +7,46 @@ use Drupal\Core\Link;
 use Drupal\Core\Locale\CountryManager;
 use Drupal\Core\Url;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use GuzzleHttp\ClientInterface;
 
 /**
  * An example controller.
  */
 class UserInfo extends ControllerBase {
+
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * The HTTP client.
+   *
+   * @var \GuzzleHttp\Client
+   */
+  protected $httpClient;
+
+  /**
+   * Construct.
+   */
+  public function __construct(RequestStack $request_stack, ClientInterface $http_client) {
+    $this->requestStack = $request_stack;
+    $this->httpClient = $http_client;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('request_stack'),
+      $container->get('http_client')
+    );
+  }
 
   /**
    * Returns a user info.
@@ -22,12 +57,12 @@ class UserInfo extends ControllerBase {
     ];
 
     // Cookie value.
-    $value = \Drupal::request()->cookies->get('Drupal_visitor_kid_token');
+    $value = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
 
     if ($value) {
       try {
         $uri = 'https://test-circlekid-core-stable.test.gneis.io/api/v2/oauth/userinfo';
-        $response = \Drupal::httpClient()->get($uri, [
+        $response = $this->httpClient->get($uri, [
           'headers' => [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $value,

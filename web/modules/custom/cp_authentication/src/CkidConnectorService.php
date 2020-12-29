@@ -5,8 +5,6 @@ namespace Drupal\cp_authentication;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
-use GuzzleHttp\Exception\RequestException;
-use Symfony\Component\HttpFoundation\RequestStack;
 use GuzzleHttp\ClientInterface;
 use Drupal\Core\Site\Settings;
 class CkidConnectorService {
@@ -38,13 +36,6 @@ class CkidConnectorService {
    * @var mixed
    */
   protected $clientSecret;
-
-  // /**
-  //  * HttpClient service.
-  //  *
-  //  * @var mixed
-  //  */
-  // protected $httpClient;
 
   /**
    * Config.
