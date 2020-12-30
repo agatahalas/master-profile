@@ -75,21 +75,51 @@ class UserInfo extends ControllerBase {
         $user_info = $this->prepareUserInfo($body);
 
         $build = [
-          '#theme' => 'table',
-          '#caption' => $this->t('My details'),
+          '#theme' => 'cp_user_info_list',
         ];
         foreach ($user_info as $title => $value) {
-          $build['#rows'][] = [
-            'data' => [
-              $this->t($title),
-              $value,
-              Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
-            ]
+          $items[] = [
+            'title' => $this->t($title),
+            'value' => $value,
+            'link' =>  Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
           ];
         }
+
+        $build['#items'][] = [
+          'title' => $this->t('My details'),
+          'rows' => $items,
+          'attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details'
+            ],
+          ],
+        ];
+
+        $build['#items'][] = [
+          'title' => $this->t('My cars'),
+          'rows' => $items,
+          'attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details'
+            ],
+          ],
+        ];
+
+        $build['#items'][] = [
+          'title' => $this->t('Communication'),
+          'rows' => $items,
+          'attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details'
+            ],
+          ],
+        ];
       }
       catch (RequestException $e) {
-        $build['#markup'] = $$this->t('Exception: @message', ['@message' => $e->getMessage()]);
+        $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
       }
     }
     return $build;

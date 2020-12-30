@@ -228,3 +228,10 @@ function circlek_preprocess_input(&$variables) {
 function circlek_preprocess_select(&$variables) {
   $variables['attributes']['class'][] = 'uk-select';
 }
+
+/**
+ * Implements template_preprocess_cp_user_info_list().
+ */
+function circlek_preprocess_cp_user_info_list(&$variables) {
+  $variables['attributes']['uk-accordion'] = TRUE;
+}

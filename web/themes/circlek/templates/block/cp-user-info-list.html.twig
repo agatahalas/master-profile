@@ -1,0 +1,26 @@
+<ul {{ attributes }}>
+  {% if items %}
+    {% for item in items %}
+      <li {{ item.attributes }}>
+        {% if item.title %}
+          <a class="uk-accordion-title" href="#"> {{ item.title }} </a>
+        {% endif %}
+        <div class="uk-accordion-content">
+          {%- if item.rows -%}
+            <table>
+              <tbody>
+              {%- for row in item.rows -%}
+                <tr>
+                  <td> {{ row.title }} </td>
+                  <td> {{ row.value }} </td>
+                  <td> {{ row.link }} </td>
+                </tr>
+              {%- endfor -%}
+              </tbody>
+            </table>
+          {%- endif -%}
+        </div>
+      </li>
+    {% endfor %}
+  {% endif %}
+</ul>
