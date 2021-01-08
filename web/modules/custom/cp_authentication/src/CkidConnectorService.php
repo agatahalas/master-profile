@@ -1,9 +1,7 @@
 <?php
 
-
 namespace Drupal\cp_authentication;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
 use GuzzleHttp\ClientInterface;
 use Drupal\Core\Site\Settings;
@@ -42,17 +40,16 @@ class CkidConnectorService {
   protected $clientSecret;
 
   /**
-   * Config.
+   * Request service.
    *
    * @var mixed
    */
-  protected $config;
+  protected $request;
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ClientInterface $http_client) {
-    $this->config = $config_factory->get('cp_authentication.settings');
+  public function __construct(ClientInterface $http_client) {
     $api_settings = Settings::get('master_profile');
     $this->apiUrl = $api_settings['api_url'];
     $this->clientId = $api_settings['client_id'];
@@ -128,6 +125,26 @@ class CkidConnectorService {
     else {
       return FALSE;
     }
+  }
+
+  /**
+   * Get user info.
+   *
+   * @param $token
+   * @return mixed|null
+   */
+  public function getUserInfo($token) {
+    $uri = $this->getApiUrl() . '/api/v2/oauth/userinfo';
+    $response = $this->httpClient->get($uri, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Authorization' => 'Bearer ' . $token,
+      ],
+    ]);
+
+    $body = json_decode($response->getBody()->getContents());
+
+    return $body;
   }
 
 }

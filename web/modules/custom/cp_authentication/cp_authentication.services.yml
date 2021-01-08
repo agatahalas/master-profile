@@ -1,4 +1,4 @@
 services:
   cp_authentication.ckid_connector:
     class: Drupal\cp_authentication\CkidConnectorService
-    arguments: ['@config.factory', '@http_client']
+    arguments: ['@http_client']
