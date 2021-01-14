@@ -5,6 +5,7 @@ namespace Drupal\cp_authentication;
 use Drupal\Core\Url;
 use GuzzleHttp\ClientInterface;
 use Drupal\Core\Site\Settings;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Circlek ID connector service.
@@ -114,9 +115,13 @@ class CkidConnectorService {
     $body = json_decode($response->getBody()->getContents());
 
     if (!empty($body->access_token)) {
-      user_cookie_save([
+     /* user_cookie_save([
         'kid_token' => $body->access_token,
-      ]);
+      ]);*/
+
+      $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+      $tempstore->set('kid_token_value', $body->access_token);
+      $tempstore->set('kid_token_expire', time() + $body->expires_in);
     }
 
     if ($response->getStatusCode() == 200) {
@@ -156,9 +161,53 @@ class CkidConnectorService {
     }
     else {
       // refresh or login
+      $access_token = $this->refreshToken($body->client_id, $token);
+
+      if ($access_token) {
+        $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+        $tempstore->set('kid_token_value', $body->access_token);
+        $tempstore->set('kid_token_expire', time() + $body->expires_in);
+      }
+      else {
+        $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+        $tempstore->delete('kid_token_value');
+        $tempstore->delete('kid_token_expire');
+
+        \Drupal::service('session_manager')->destroy();
+
+        $url = Url::fromRoute('cp_authentication.login');
+        $response = new RedirectResponse($url->toString());
+        $response->send();
+      }
+    }
+  }
+
+  public function refreshToken($client_id, $refresh_token) {
+    $uri = $this->getApiUrl() . '/api/v2/oauth/token/refresh';
+
+    $response = $this->httpClient->post($uri, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/x-www-form-urlencoded',
+        'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+      ],
+      'form_params' => [
+        'client_id' => $client_id,
+        'grant_type' => 'refresh_token',
+        'token' => $refresh_token,
+        'scope' => 'USER',
+      ],
+    ]);
+
+
+    $body = json_decode($response->getBody()->getContents());
+
+    if ($body->access_token) {
+      return $body->access_token;
+    }
+    else {
       return FALSE;
     }
-
   }
 
   /**

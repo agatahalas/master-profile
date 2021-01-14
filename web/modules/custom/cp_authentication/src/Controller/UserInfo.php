@@ -68,10 +68,18 @@ class UserInfo extends ControllerBase {
     ];
 
     // Cookie value.
-    $token = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
-    $active = $this->ckidConnectorService->introspectToken($token);
+    //$token = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
+   // $active = $this->ckidConnectorService->introspectToken($token);
 
-    if ($active) {
+    $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+    $token = $tempstore->get('kid_token_value');
+    $token_expire = $tempstore->get('kid_token_expire');
+    if ($token_expire < time()) {
+      //token niewazny
+      $active = $this->ckidConnectorService->introspectToken($token);
+    }
+
+    if (TRUE) {
       try {
         $body = $this->ckidConnectorService->getUserInfo($token);
         $user_info = $this->prepareUserInfo($body);
@@ -166,8 +174,15 @@ class UserInfo extends ControllerBase {
   }
 
   public function logout(Request $request) {
+    $content = $request->getContent();
     $params = json_decode($request->getContent(), TRUE);
     \Drupal::logger('test logout')->info('test logout: ' . print_r($request, TRUE));
+
+    $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+    $tempstore->delete('kid_token_value');
+    $tempstore->delete('kid_token_expire');
+
+    \Drupal::service('session_manager')->destroy();
 
     return ['#markup' => 'Test logout'];
   }

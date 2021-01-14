@@ -100,8 +100,10 @@ class User extends ConditionPluginBase implements ContainerFactoryPluginInterfac
   public function evaluate() {
 
     if (!empty($this->configuration['roles']) && !$this->isNegated()) {
-      $cookie_value = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
-      if (!empty($cookie_value)) {
+     /// $cookie_value = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
+      $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
+      $token = $tempstore->get('kid_token_value');
+      if (!empty($token)) {
         return TRUE;
       }
       else {
