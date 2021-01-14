@@ -26,7 +26,6 @@ function cp_authentication_theme($existing, $type, $theme, $path) {
     'cp_user_info_list' => [
       'variables' => [
         'items' => [],
-        'attributes' => [],
       ],
       'file' => 'cp_authentication.field.inc'
     ],

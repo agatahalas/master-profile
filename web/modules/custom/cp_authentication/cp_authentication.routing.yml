@@ -6,6 +6,15 @@ cp_authentication.login:
   requirements:
     _access: 'TRUE'
 
+cp_authentication.logout:
+  path: '/api/v1/logout'
+  methods: [POST]
+  defaults:
+    _controller: 'Drupal\cp_authentication\Controller\UserInfo::logout'
+    _title: 'Log out'
+  requirements:
+    _access: 'TRUE'
+
 cp_authentication.register_one:
   path: '/customer/register-one'
   defaults:

@@ -128,6 +128,40 @@ class CkidConnectorService {
   }
 
   /**
+   * Introspect token.
+   *
+   * @param string $token
+   *  Token.
+   * @return bool
+   *  Return true if token is active.
+   */
+  public function introspectToken($token) {
+    $uri = $this->getApiUrl() . '/api/v1/oauth/token/introspect';
+
+    $response = $this->httpClient->post($uri, [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/x-www-form-urlencoded',
+        'Authorization' => 'Basic ' . base64_encode($this->clientId . ':' . $this->clientSecret),
+      ],
+      'form_params' => [
+        'token' => $token,
+      ],
+    ]);
+
+    $body = json_decode($response->getBody()->getContents());
+
+    if ($body->active) {
+      return TRUE;
+    }
+    else {
+      // refresh or login
+      return FALSE;
+    }
+
+  }
+
+  /**
    * Get user info.
    *
    * @param $token

@@ -8,6 +8,7 @@ use Drupal\Core\Locale\CountryManager;
 use Drupal\Core\Url;
 use Drupal\cp_authentication\CkidConnectorService;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use GuzzleHttp\ClientInterface;
@@ -68,8 +69,9 @@ class UserInfo extends ControllerBase {
 
     // Cookie value.
     $token = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
+    $active = $this->ckidConnectorService->introspectToken($token);
 
-    if ($token) {
+    if ($active) {
       try {
         $body = $this->ckidConnectorService->getUserInfo($token);
         $user_info = $this->prepareUserInfo($body);
@@ -88,7 +90,7 @@ class UserInfo extends ControllerBase {
         $build['#items'][] = [
           'title' => $this->t('My details'),
           'rows' => $items,
-          'attributes' => [
+          '#attributes' => [
             'class' => [
               'user-info-table',
               'my-details'
@@ -99,7 +101,7 @@ class UserInfo extends ControllerBase {
         $build['#items'][] = [
           'title' => $this->t('My cars'),
           'rows' => $items,
-          'attributes' => [
+          '#attributes' => [
             'class' => [
               'user-info-table',
               'my-details'
@@ -110,7 +112,7 @@ class UserInfo extends ControllerBase {
         $build['#items'][] = [
           'title' => $this->t('Communication'),
           'rows' => $items,
-          'attributes' => [
+          '#attributes' => [
             'class' => [
               'user-info-table',
               'my-details'
@@ -121,6 +123,9 @@ class UserInfo extends ControllerBase {
       catch (RequestException $e) {
         $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
       }
+    }
+    else {
+      $build['#markup'] = $this->t('Please log in!!!');
     }
     return $build;
   }
@@ -158,6 +163,13 @@ class UserInfo extends ControllerBase {
       'Country' => isset($country) ? $country : '',
       'Gender' => isset($data->gender) ? $data->gender : '',
     ];
+  }
+
+  public function logout(Request $request) {
+    $params = json_decode($request->getContent(), TRUE);
+    \Drupal::logger('test logout')->info('test logout: ' . print_r($request, TRUE));
+
+    return ['#markup' => 'Test logout'];
   }
 
 }

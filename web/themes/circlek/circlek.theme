@@ -166,6 +166,9 @@ function circlek_preprocess_block(array &$variables) {
     $variables['attributes']['class'][] = 'ck-site-branding-block';
     // Float logo left.
     $variables['attributes']['class'][] = 'uk-float-left';
+
+    // Front page path.
+    $variables['front_path'] = Url::fromRoute('<front>');
   }
 
   if (!empty($variables['plugin_id']) && $variables['plugin_id'] == 'cp_links') {
