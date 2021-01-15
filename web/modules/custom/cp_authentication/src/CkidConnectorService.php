@@ -41,11 +41,11 @@ class CkidConnectorService {
   protected $clientSecret;
 
   /**
-   * Request service.
+   * Temp store private - kid_session.
    *
    * @var mixed
    */
-  protected $request;
+  protected $kidSession;
 
   /**
    * {@inheritdoc}
@@ -56,6 +56,7 @@ class CkidConnectorService {
     $this->clientId = $api_settings['client_id'];
     $this->clientSecret = $api_settings['client_secret'];
     $this->httpClient = $http_client;
+    $this->kidSession = \Drupal::service('tempstore.private')->get('kid_session');
   }
 
   /**
@@ -115,20 +116,12 @@ class CkidConnectorService {
     $body = json_decode($response->getBody()->getContents());
 
     if (!empty($body->access_token)) {
-     /* user_cookie_save([
-        'kid_token' => $body->access_token,
-      ]);*/
+      $this->kidSession->set('kid_access_token_value', $body->access_token);
+      $this->kidSession->set('kid_refresh_token_value', $body->refresh_token);
+      $this->kidSession->set('kid_token_expire', time() + $body->expires_in);
 
-      $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-      $tempstore->set('kid_token_value', $body->access_token);
-      $tempstore->set('kid_token_expire', time() + $body->expires_in);
-    }
-
-    if ($response->getStatusCode() == 200) {
-      return TRUE;
-    }
-    else {
-      return FALSE;
+      $data = $this->introspectToken($body->access_token);
+      $this->kidSession->set('kid_client_id', $data->client_id);
     }
   }
 
@@ -156,34 +149,18 @@ class CkidConnectorService {
 
     $body = json_decode($response->getBody()->getContents());
 
-    if ($body->active) {
-      return TRUE;
-    }
-    else {
-      // refresh or login
-      $access_token = $this->refreshToken($body->client_id, $token);
-
-      if ($access_token) {
-        $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-        $tempstore->set('kid_token_value', $body->access_token);
-        $tempstore->set('kid_token_expire', time() + $body->expires_in);
-      }
-      else {
-        $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-        $tempstore->delete('kid_token_value');
-        $tempstore->delete('kid_token_expire');
-
-        \Drupal::service('session_manager')->destroy();
-
-        $url = Url::fromRoute('cp_authentication.login');
-        $response = new RedirectResponse($url->toString());
-        $response->send();
-      }
-    }
+    return $body;
   }
 
-  public function refreshToken($client_id, $refresh_token) {
+  public function refreshToken() {
     $uri = $this->getApiUrl() . '/api/v2/oauth/token/refresh';
+    $client_id = $this->kidSession->get('kid_client_id');
+    if (empty($client_id)) {
+      $url = Url::fromRoute('cp_authentication.login');
+      $response = new RedirectResponse($url->toString());
+      $response->send();
+    }
+    $refresh_token = $this->kidSession->get('kid_refresh_token_value');
 
     $response = $this->httpClient->post($uri, [
       'headers' => [
@@ -194,19 +171,21 @@ class CkidConnectorService {
       'form_params' => [
         'client_id' => $client_id,
         'grant_type' => 'refresh_token',
-        'token' => $refresh_token,
+        'refresh_token' => $refresh_token,
         'scope' => 'USER',
       ],
     ]);
 
-
     $body = json_decode($response->getBody()->getContents());
 
     if ($body->access_token) {
-      return $body->access_token;
+      $this->kidSession->set('kid_access_token_value', $body->access_token);
+      $this->kidSession->set('kid_token_expire', time() + $body->expires_in);
     }
     else {
-      return FALSE;
+      $url = Url::fromRoute('cp_authentication.login');
+      $response = new RedirectResponse($url->toString());
+      $response->send();
     }
   }
 

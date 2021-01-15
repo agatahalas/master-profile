@@ -67,73 +67,63 @@ class UserInfo extends ControllerBase {
       '#markup' => $this->t('Hello from user info!'),
     ];
 
-    // Cookie value.
-    //$token = $this->requestStack->getCurrentRequest()->cookies->get('Drupal_visitor_kid_token');
-   // $active = $this->ckidConnectorService->introspectToken($token);
+    // Cookie values.
+    $kid_session = \Drupal::service('tempstore.private')->get('kid_session');
 
-    $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-    $token = $tempstore->get('kid_token_value');
-    $token_expire = $tempstore->get('kid_token_expire');
-    if ($token_expire < time()) {
-      //token niewazny
-      $active = $this->ckidConnectorService->introspectToken($token);
+    if ($kid_session->get('kid_token_expire') < time()) {
+      $this->ckidConnectorService->refreshToken();
     }
 
-    if (TRUE) {
-      try {
-        $body = $this->ckidConnectorService->getUserInfo($token);
-        $user_info = $this->prepareUserInfo($body);
+    try {
+      $body = $this->ckidConnectorService->getUserInfo($kid_session->get('kid_access_token_value'));
+      $user_info = $this->prepareUserInfo($body);
 
-        $build = [
-          '#theme' => 'cp_user_info_list',
-        ];
-        foreach ($user_info as $title => $value) {
-          $items[] = [
-            'title' => $this->t($title),
-            'value' => $value,
-            'link' =>  Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
-          ];
-        }
-
-        $build['#items'][] = [
-          'title' => $this->t('My details'),
-          'rows' => $items,
-          '#attributes' => [
-            'class' => [
-              'user-info-table',
-              'my-details'
-            ],
-          ],
-        ];
-
-        $build['#items'][] = [
-          'title' => $this->t('My cars'),
-          'rows' => $items,
-          '#attributes' => [
-            'class' => [
-              'user-info-table',
-              'my-details'
-            ],
-          ],
-        ];
-
-        $build['#items'][] = [
-          'title' => $this->t('Communication'),
-          'rows' => $items,
-          '#attributes' => [
-            'class' => [
-              'user-info-table',
-              'my-details'
-            ],
-          ],
+      $build = [
+        '#theme' => 'cp_user_info_list',
+      ];
+      foreach ($user_info as $title => $value) {
+        $items[] = [
+          'title' => $this->t($title),
+          'value' => $value,
+          'link' =>  Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
         ];
       }
-      catch (RequestException $e) {
-        $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
-      }
+
+      $build['#items'][] = [
+        'title' => $this->t('My details'),
+        'rows' => $items,
+        '#attributes' => [
+          'class' => [
+            'user-info-table',
+            'my-details'
+          ],
+        ],
+      ];
+
+      $build['#items'][] = [
+        'title' => $this->t('My cars'),
+        'rows' => $items,
+        '#attributes' => [
+          'class' => [
+            'user-info-table',
+            'my-details'
+          ],
+        ],
+      ];
+
+      $build['#items'][] = [
+        'title' => $this->t('Communication'),
+        'rows' => $items,
+        '#attributes' => [
+          'class' => [
+            'user-info-table',
+            'my-details'
+          ],
+        ],
+      ];
     }
-    else {
-      $build['#markup'] = $this->t('Please log in!!!');
+    catch (RequestException $e) {
+      $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
     }
     return $build;
   }
@@ -173,13 +163,13 @@ class UserInfo extends ControllerBase {
     ];
   }
 
+
   public function logout(Request $request) {
-    $content = $request->getContent();
-    $params = json_decode($request->getContent(), TRUE);
     \Drupal::logger('test logout')->info('test logout: ' . print_r($request, TRUE));
 
     $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-    $tempstore->delete('kid_token_value');
+    $tempstore->delete('kid_access_token_value');
+    $tempstore->delete('kid_refresh_token_value');
     $tempstore->delete('kid_token_expire');
 
     \Drupal::service('session_manager')->destroy();
