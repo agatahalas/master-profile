@@ -731,6 +731,12 @@ $settings['file_scan_ignore_directories'] = [
 ];
 
 /**
+ * Set cookie_samesite to None to allow to destroy the session from
+ * third party site referer.
+ */
+ini_set('session.cookie_samesite', 'None');
+
+/**
  * The default number of entities to update in a batch process.
  *
  * This is used by update and post-update functions that need to go through and

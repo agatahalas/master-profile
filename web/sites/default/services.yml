@@ -22,7 +22,7 @@ parameters:
     # is created to the cookie expires, i.e. when the browser is expected to
     # discard the cookie. The value 0 means "until the browser is closed".
     # @default 2000000
-    cookie_lifetime: 2000000
+    cookie_lifetime: 0
     #
     # Drupal automatically generates a unique session cookie name based on the
     # full domain name used to access the site. This mechanism is sufficient
@@ -152,7 +152,6 @@ parameters:
     - sftp
     - webcal
     - rtsp
-
    # Configure Cross-Site HTTP requests (CORS).
    # Read https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
    # for more information about the topic in general.
