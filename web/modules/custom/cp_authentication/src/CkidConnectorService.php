@@ -129,9 +129,10 @@ class CkidConnectorService {
    * Introspect token.
    *
    * @param string $token
-   *  Token.
-   * @return bool
-   *  Return true if token is active.
+   *   Token.
+   *
+   * @return object
+   *   Returns token instrospect object.
    */
   public function introspectToken($token) {
     $uri = $this->getApiUrl() . '/api/v1/oauth/token/introspect';
@@ -152,14 +153,16 @@ class CkidConnectorService {
     return $body;
   }
 
-  public function refreshToken() {
+  /**
+   * Refresh token.
+   *
+   * @return bool
+   *   Returns true if token has been refreshed or false if not.
+   */
+  public function refreshToken($client_id) {
     $uri = $this->getApiUrl() . '/api/v2/oauth/token/refresh';
     $client_id = $this->kidSession->get('kid_client_id');
-    if (empty($client_id)) {
-      $url = Url::fromRoute('cp_authentication.login');
-      $response = new RedirectResponse($url->toString());
-      $response->send();
-    }
+
     $refresh_token = $this->kidSession->get('kid_refresh_token_value');
 
     $response = $this->httpClient->post($uri, [
@@ -181,19 +184,20 @@ class CkidConnectorService {
     if ($body->access_token) {
       $this->kidSession->set('kid_access_token_value', $body->access_token);
       $this->kidSession->set('kid_token_expire', time() + $body->expires_in);
+      return TRUE;
     }
-    else {
-      $url = Url::fromRoute('cp_authentication.login');
-      $response = new RedirectResponse($url->toString());
-      $response->send();
-    }
+
+    return FALSE;
   }
 
   /**
    * Get user info.
    *
-   * @param $token
+   * @param string $token
+   *   Valid token.
+   *
    * @return mixed|null
+   *   Body object.
    */
   public function getUserInfo($token) {
     $uri = $this->getApiUrl() . '/api/v2/oauth/userinfo';
@@ -207,6 +211,51 @@ class CkidConnectorService {
     $body = json_decode($response->getBody()->getContents());
 
     return $body;
+  }
+
+  /**
+   * Check if user is logged in.
+   *
+   * @return bool
+   *   Return true if user is logged in or false.
+   */
+  public function loggedIn() {
+    if ($this->kidSession->get('kid_token_expire') < time()) {
+      $client_id = $this->kidSession->get('kid_client_id');
+      if (empty($client_id)) {
+        return FALSE;
+      }
+      else {
+        $token_refreshed = $this->refreshToken($client_id);
+        if ($token_refreshed) {
+          return TRUE;
+        }
+        else {
+          return FALSE;
+        }
+      }
+    }
+    else {
+      return TRUE;
+    }
+  }
+
+  /**
+   * Redirect to user dashboard.
+   */
+  public function redirectToUserPage() {
+    $url = Url::fromRoute('cp_authentication.user_info');
+    $response = new RedirectResponse($url->toString());
+    $response->send();
+  }
+
+  /**
+   * Redirect to user login page.
+   */
+  public function redirectToAuthenticatePage() {
+    $url = $this->getAuthorizeLink();
+    $response = new RedirectResponse($url);
+    $response->send();
   }
 
 }
