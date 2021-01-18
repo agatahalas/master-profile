@@ -38,11 +38,18 @@ class CustomerLoginForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $authorize_link = $this->ckidConnector->getAuthorizeLink();
 
+    if ($this->ckidConnector->loggedIn()) {
+      $this->ckidConnector->redirectToUserPage();
+    }
+    else {
+      $this->ckidConnector->redirectToAuthenticatePage();
+    }
+
+
     $form['kid_login'] = [
       '#type' => 'item',
       '#markup' => '<a class="button uk-button uk-button-secondary" href="' . $authorize_link .'">' . $this->t('CKID Log in') . '</a>',
     ];
-
 
     $form['description'] = [
       '#type' => 'markup',
