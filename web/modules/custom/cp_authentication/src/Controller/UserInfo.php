@@ -67,63 +67,64 @@ class UserInfo extends ControllerBase {
       '#markup' => $this->t('Hello from user info!'),
     ];
 
-    // Cookie values.
-    $kid_session = \Drupal::service('tempstore.private')->get('kid_session');
+    // Check if user is logged in.
+    if ($this->ckidConnectorService->loggedIn()) {
+      try {
+        $kid_session = \Drupal::service('tempstore.private')->get('kid_session');
+        $body = $this->ckidConnectorService->getUserInfo($kid_session->get('kid_access_token_value'));
+        $user_info = $this->prepareUserInfo($body);
 
-    if ($kid_session->get('kid_token_expire') < time()) {
-      $this->ckidConnectorService->refreshToken();
-    }
+        $build = [
+          '#theme' => 'cp_user_info_list',
+        ];
+        foreach ($user_info as $title => $value) {
+          $items[] = [
+            'title' => $this->t($title),
+            'value' => $value,
+            'link' => Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
+          ];
+        }
 
-    try {
-      $body = $this->ckidConnectorService->getUserInfo($kid_session->get('kid_access_token_value'));
-      $user_info = $this->prepareUserInfo($body);
+        $build['#items'][] = [
+          'title' => $this->t('My details'),
+          'rows' => $items,
+          '#attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details',
+            ],
+          ],
+        ];
 
-      $build = [
-        '#theme' => 'cp_user_info_list',
-      ];
-      foreach ($user_info as $title => $value) {
-        $items[] = [
-          'title' => $this->t($title),
-          'value' => $value,
-          'link' =>  Link::fromTextAndUrl($this->t('Edit'), Url::fromRoute('<none>')),
+        $build['#items'][] = [
+          'title' => $this->t('My cars'),
+          'rows' => $items,
+          '#attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details',
+            ],
+          ],
+        ];
+
+        $build['#items'][] = [
+          'title' => $this->t('Communication'),
+          'rows' => $items,
+          '#attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details',
+            ],
+          ],
         ];
       }
-
-      $build['#items'][] = [
-        'title' => $this->t('My details'),
-        'rows' => $items,
-        '#attributes' => [
-          'class' => [
-            'user-info-table',
-            'my-details'
-          ],
-        ],
-      ];
-
-      $build['#items'][] = [
-        'title' => $this->t('My cars'),
-        'rows' => $items,
-        '#attributes' => [
-          'class' => [
-            'user-info-table',
-            'my-details'
-          ],
-        ],
-      ];
-
-      $build['#items'][] = [
-        'title' => $this->t('Communication'),
-        'rows' => $items,
-        '#attributes' => [
-          'class' => [
-            'user-info-table',
-            'my-details'
-          ],
-        ],
-      ];
+      catch (RequestException $e) {
+        $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
+      }
     }
-    catch (RequestException $e) {
-      $build['#markup'] = $this->t('Exception: @message', ['@message' => $e->getMessage()]);
+    // User is not logged in, redirect to login page.
+    else {
+      $this->ckidConnectorService->redirectToAuthenticatePage();
     }
     return $build;
   }
