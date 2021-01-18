@@ -181,12 +181,19 @@ function circlek_preprocess_block(array &$variables) {
 
 function circlek_add_uikit_icon(&$items) {
   if (!empty($items) && is_array($items)) {
+    $icon_client = \Drupal::service('cp_icons.icons_api');
+    $icons = $icon_client->getIcons('service');
+
     foreach ($items as $item_key => &$item_value) {
       if (isset($item_value['#type']) && $item_value['#type'] == 'link') {
         $attributes = $item_value['#url']->getOption('attributes');
-        $item_value['#title'] = [
-          '#markup' => '<span class="uk-margin-small-right" uk-icon="' . $attributes['id'] . '"></span>' . (string) $items[$item_key]['#title'],
-        ];
+        if (isset($icons[$attributes['id']])) {
+          $icon_url  = $icons[$attributes['id']]['url'] . '?color=red';
+          $icon_name = $icons[$attributes['id']]['name'];
+          $item_value['#title'] = [
+            '#markup' => '<img class="uk-margin-right" src="' . $icon_url . '" alt="' . $icon_name . '" width="35" height="25"/>' . (string) $items[$item_key]['#title'],
+          ];
+        }
       }
       else {
         $item_value['#title'] = [

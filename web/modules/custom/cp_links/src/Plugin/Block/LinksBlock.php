@@ -31,7 +31,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromRoute('cp_authentication.user_info', [], [
                 'attributes' => [
-                  'id' => 'heart',
+                  'id' => 'profile',
                 ],
               ]),
               '#title' => $this->t('Account overview'),
@@ -46,7 +46,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'carwash-subscription',
+                  'id' => 'car-wash',
                 ],
               ]),
               '#title' => $this->t('Carwash subscription'),

@@ -61,7 +61,10 @@ class IconsAPI {
     $response = $request->getBody()->getContents();
     $contents = json_decode($response, TRUE);
     if (!empty($contents) && is_array($contents)) {
-      return $contents;
+      foreach ($contents as $icon_value) {
+        $icons[strtolower(str_replace(' ', '-', $icon_value['name']))] = $icon_value;
+      }
+      return $icons;
     }
   }
 
