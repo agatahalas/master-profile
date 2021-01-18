@@ -10,7 +10,7 @@ cp_authentication.logout:
   path: '/api/v1/logout'
   methods: [POST]
   defaults:
-    _controller: 'Drupal\cp_authentication\Controller\UserInfo::logout'
+    _controller: 'Drupal\cp_authentication\Controller\SSOLogout::logout'
     _title: 'Log out'
   requirements:
     _access: 'TRUE'

@@ -163,18 +163,4 @@ class UserInfo extends ControllerBase {
     ];
   }
 
-
-  public function logout(Request $request) {
-    \Drupal::logger('test logout')->info('test logout: ' . print_r($request, TRUE));
-
-    $tempstore = \Drupal::service('tempstore.private')->get('kid_session');
-    $tempstore->delete('kid_access_token_value');
-    $tempstore->delete('kid_refresh_token_value');
-    $tempstore->delete('kid_token_expire');
-
-    \Drupal::service('session_manager')->destroy();
-
-    return ['#markup' => 'Test logout'];
-  }
-
 }
