@@ -1,3 +1,13 @@
+<div class="cp-user-info-name">
+  {% if user_name %}
+    <p class="uk-text-bold"> {{ user_name }}</p>
+  {% endif %}
+  {% if user_ckid %}
+    <p class="uk-text-bold">Circle K ID: </p>
+    <p>{{ user_ckid }}</p>
+  {% endif %}
+</div>
+
 <ul {{ attributes }}>
   {% if items %}
     {% for item in items %}

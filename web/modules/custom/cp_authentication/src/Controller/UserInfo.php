@@ -76,6 +76,8 @@ class UserInfo extends ControllerBase {
 
         $build = [
           '#theme' => 'cp_user_info_list',
+          '#user_name' => $body->name,
+          '#user_ckid' => $body->email,
         ];
         foreach ($user_info as $title => $value) {
           $items[] = [
