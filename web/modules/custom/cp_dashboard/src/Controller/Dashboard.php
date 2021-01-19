@@ -138,6 +138,4 @@ class Dashboard extends ControllerBase {
     return $build;
   }
 
-  
-
 }
