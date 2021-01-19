@@ -3,15 +3,15 @@
 namespace Drupal\cp_authentication\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\Core\Session\SessionManager;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Session\SessionManager;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\cp_authentication\CkidConnectorService;
 use GuzzleHttp\Exception\RequestException;
-use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
  * Single sign on.
