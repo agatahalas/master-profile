@@ -53,7 +53,6 @@ class IconsAPI {
    */
   public function getIcons($category = NULL) {
     $icons_route = '/icons';
-    $active_theme = \Drupal::config('system.theme')->get('default');
     if (isset($category)) {
       $icons_route .= '?category=' . $category;
     }

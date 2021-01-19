@@ -1,7 +1,6 @@
 name: 'CP Icons'
-description: Get icons from Slim API.
+type: module
+description: 'Get icons from Slim API.'
+core: 8.x
 core_version_requirement: ^8 || ^9
 package: 'cp'
-type: module
-version: '8.x-1.0'
-

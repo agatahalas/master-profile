@@ -206,7 +206,7 @@ function circlek_add_uikit_icon(&$items) {
           $icon_url  = $icons[$attributes['id']]['url'] . '?color=da291c';
           $icon_name = $icons[$attributes['id']]['name'];
           $item_value['#title'] = [
-            '#markup' => '<img class="uk-margin-right" src="' . $icon_url . '" alt="' . $icon_name . '" width="35" height="25"/>' . (string) $items[$item_key]['#title'],
+            '#markup' => '<img class="uk-margin-right" src="' . $icon_url . '" alt="' . $icon_name . '" width="35"/>' . (string) $items[$item_key]['#title'],
           ];
         }
       }
