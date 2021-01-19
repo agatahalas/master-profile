@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\cp_user_basic_data;
+namespace Drupal\cp_ckid_basic_data;
 
 use GuzzleHttp\ClientInterface;
 use Drupal\cp_authentication\CkidConnectorService;
@@ -33,6 +33,16 @@ class CkidBasicData {
     $this->httpClient = $http_client;
   }
 
+  /**
+   * Get basic user data.
+   *
+   * @param string $token
+   *   Valid token.
+   * @param bool $formatted
+   *
+   * @return array|object
+   *   Formatted or raw user data.
+   */
   public function getData($token, $formatted = FALSE) {
     $uri = $this->ckidConnector->getApiUrl() . '/api/v2/oauth/userinfo';
     $response = $this->httpClient->get($uri, [
@@ -45,7 +55,6 @@ class CkidBasicData {
     $body = json_decode($response->getBody()->getContents());
     if (!empty($formatted)) {
       $formatted_data = $this->prepareUserInfo($body);
-      //dd($formatted_data);
       return $formatted_data;
     }
     return $body;

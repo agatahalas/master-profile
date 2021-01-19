@@ -1,7 +1,0 @@
-cp_user_basic_data.dummy:
-  path: '/cp_user_basic_data/dummy'
-  defaults:
-    _controller: '\Drupal\cp_user_basic_data\Controller\BasicData::content'
-    _title: 'Dummy page'
-  requirements:
-    _access: 'TRUE'

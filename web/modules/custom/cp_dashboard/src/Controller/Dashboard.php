@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use GuzzleHttp\ClientInterface;
-use Drupal\cp_user_basic_data\CkidBasicData;
+use Drupal\cp_ckid_basic_data\CkidBasicData;
 
 /**
  * An example controller.
@@ -65,7 +65,7 @@ class Dashboard extends ControllerBase {
       $container->get('cp_authentication.ckid_connector'),
       $container->get('request_stack'),
       $container->get('http_client'),
-      $container->get('cp_user_basic_data.ckid_basic_data')
+      $container->get('cp_ckid_basic_data.ckid_basic_data')
     );
   }
 
