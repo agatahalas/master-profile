@@ -10,8 +10,16 @@ cp_authentication.logout:
   path: '/api/v1/logout'
   methods: [POST]
   defaults:
-    _controller: 'Drupal\cp_authentication\Controller\SSOLogout::logout'
+    _controller: 'Drupal\cp_authentication\Controller\SSO::logout'
     _title: 'Log out'
+  requirements:
+    _access: 'TRUE'
+
+cp_authentication.redirect_with_code:
+  path: '/api/v1/redirect-with-code'
+  defaults:
+    _controller: '\Drupal\cp_authentication\Controller\SSO::loginRedirect'
+    _title: 'Redirect with code'
   requirements:
     _access: 'TRUE'
 
@@ -59,14 +67,6 @@ cp_authentication.send_code:
   path: '/customer/send-code'
   defaults:
     _title: 'Send code'
-  requirements:
-    _access: 'TRUE'
-
-cp_authentication.get_token:
-  path: '/customer/get-token'
-  defaults:
-    _controller: '\Drupal\cp_authentication\Controller\GetToken::content'
-    _title: 'Get token'
   requirements:
     _access: 'TRUE'
 
