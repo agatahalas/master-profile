@@ -69,11 +69,3 @@ cp_authentication.send_code:
     _title: 'Send code'
   requirements:
     _access: 'TRUE'
-
-cp_authentication.user_info:
-  path: '/kid/user/info'
-  defaults:
-    _controller: '\Drupal\cp_authentication\Controller\UserInfo::content'
-    _title: 'Account overview'
-  requirements:
-    _access: 'TRUE'

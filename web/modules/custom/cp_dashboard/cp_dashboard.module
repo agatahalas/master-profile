@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function cp_dashboard_theme($existing, $type, $theme, $path) {
+  return [
+    'cp_user_info_list' => [
+      'variables' => [
+        'items' => [],
+      ],
+      'file' => 'cp_dashboard.field.inc'
+    ],
+  ];
+}

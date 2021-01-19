@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\cp_authentication\Controller;
+namespace Drupal\cp_dashboard\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
@@ -12,11 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use GuzzleHttp\ClientInterface;
+use Drupal\cp_user_basic_data\CkidBasicData;
 
 /**
  * An example controller.
  */
-class UserInfo extends ControllerBase {
+class Dashboard extends ControllerBase {
 
   /**
    * The CKID Connector service.
@@ -40,12 +41,20 @@ class UserInfo extends ControllerBase {
   protected $httpClient;
 
   /**
+   * User basic data service.
+   *
+   * @var \Drupal\cp_user_basic_data\CkidBasicData
+   */
+   protected $ckidBasicData;
+
+  /**
    * Construct.
    */
-  public function __construct(CkidConnectorService $ckid_connector_service, RequestStack $request_stack, ClientInterface $http_client) {
+  public function __construct(CkidConnectorService $ckid_connector_service, RequestStack $request_stack, ClientInterface $http_client, CkidBasicData $ckid_basic_data) {
     $this->ckidConnectorService = $ckid_connector_service;
     $this->requestStack = $request_stack;
     $this->httpClient = $http_client;
+    $this->ckidBasicData = $ckid_basic_data;
   }
 
   /**
@@ -55,7 +64,8 @@ class UserInfo extends ControllerBase {
     return new static(
       $container->get('cp_authentication.ckid_connector'),
       $container->get('request_stack'),
-      $container->get('http_client')
+      $container->get('http_client'),
+      $container->get('cp_user_basic_data.data')
     );
   }
 
@@ -71,8 +81,8 @@ class UserInfo extends ControllerBase {
     if ($this->ckidConnectorService->loggedIn()) {
       try {
         $kid_session = \Drupal::service('tempstore.private')->get('kid_session');
-        $body = $this->ckidConnectorService->getUserInfo($kid_session->get('kid_access_token_value'));
-        $user_info = $this->prepareUserInfo($body);
+        $body = $this->ckidBasicData->getData($kid_session->get('kid_access_token_value'));
+        $user_info = $this->ckidBasicData->prepareUserInfo($body);
 
         $build = [
           '#theme' => 'cp_user_info_list',
@@ -129,39 +139,6 @@ class UserInfo extends ControllerBase {
     return $build;
   }
 
-  /**
-   * Prepare user data to display.
-   *
-   * @param object $data
-   *   User data.
-   *
-   * @return array
-   *   Processed user data.
-   */
-  private function prepareUserInfo($data) {
-    if (isset($data->country_code)) {
-      $phone = isset($data->phone_number) ? '+' . $data->country_code . ' ' . $data->phone_number : '';
-    }
-    else {
-      $phone = isset($data->phone_number) ? $data->phone_number : '';
-    }
-
-    $countries = CountryManager::getStandardList();
-    if (!empty($countries) && isset($data->ckidTcCountryCode)) {
-      $country = $countries[strtoupper($data->ckidTcCountryCode)];
-    }
-
-    return [
-      'Name' => isset($data->name) ? $data->name : '',
-      'Circle K ID' => isset($data->email) ? $data->email : '',
-      'Connected accounts' => isset($data->email) ? $data->email : '',
-      'Phone' => $phone,
-      'Birthday' => isset($data->birthdate) ? $data->birthdate : '',
-      'Address' => '',
-      'Zip code' => isset($data->zip_code) ? $data->zip_code : '',
-      'Country' => isset($country) ? $country : '',
-      'Gender' => isset($data->gender) ? $data->gender : '',
-    ];
-  }
+  
 
 }

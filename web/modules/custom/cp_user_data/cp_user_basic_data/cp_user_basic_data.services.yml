@@ -1,0 +1,4 @@
+services:
+  cp_user_basic_data.data:
+    class: Drupal\cp_user_basic_data\CkidBasicData
+    arguments: ['@cp_authentication.ckid_connector', '@http_client']

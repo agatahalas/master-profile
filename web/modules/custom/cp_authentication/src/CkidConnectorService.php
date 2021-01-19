@@ -244,7 +244,7 @@ class CkidConnectorService {
    * Redirect to user dashboard.
    */
   public function redirectToUserPage() {
-    $url = Url::fromRoute('cp_authentication.user_info');
+    $url = Url::fromRoute('cp_account.dashboard');
     $response = new RedirectResponse($url->toString());
     $response->send();
   }

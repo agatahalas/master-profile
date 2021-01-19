@@ -1,0 +1,7 @@
+cp_account.dashboard:
+  path: '/kid/dashboard'
+  defaults:
+    _controller: '\Drupal\cp_dashboard\Controller\Dashboard::content'
+    _title: 'Account overview'
+  requirements:
+    _access: 'TRUE'

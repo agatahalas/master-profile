@@ -1,0 +1,8 @@
+name: 'CP User basic data'
+type: module
+description: 'Provides user basic data, like e-mail, name, phone, etc.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: 'cp'
+dependencies:
+  - cp_authentication

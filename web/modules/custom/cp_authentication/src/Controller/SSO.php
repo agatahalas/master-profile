@@ -100,7 +100,7 @@ class SSO extends ControllerBase {
 
     try {
       $this->ckidConnectorService->getToken($code);
-      return $this->redirect('cp_authentication.user_info');
+      return $this->redirect('cp_account.dashboard');
     }
     catch (RequestException $e) {
       $this->loggerFactory->get('SSO')->warning('Initial login token could not be generated. Exception: @message', ['@message' => $e->getMessage()]);
