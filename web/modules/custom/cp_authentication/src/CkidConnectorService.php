@@ -79,7 +79,7 @@ class CkidConnectorService {
         'client_id' => $this->clientId,
         'response_type' => 'code',
         'scope' => 'USER',
-        'redirect_uri' => Url::fromRoute('cp_authentication.get_token', [], ['absolute' => TRUE, 'https' => TRUE])->toString(),
+        'redirect_uri' => Url::fromRoute('cp_authentication.redirect_with_code', [], ['absolute' => TRUE, 'https' => TRUE])->toString(),
       ],
     ];
     $request_url = Url::fromUri($uri, $option)->toString();
@@ -109,7 +109,7 @@ class CkidConnectorService {
         'code' => $code,
         'grant_type' => 'authorization_code',
         'scope' => 'USER',
-        'redirect_uri' => Url::fromRoute('cp_authentication.get_token', [], ['absolute' => TRUE, 'https' => TRUE])->toString(),
+        'redirect_uri' => Url::fromRoute('cp_authentication.redirect_with_code', [], ['absolute' => TRUE, 'https' => TRUE])->toString(),
       ],
     ]);
 
@@ -244,7 +244,7 @@ class CkidConnectorService {
    * Redirect to user dashboard.
    */
   public function redirectToUserPage() {
-    $url = Url::fromRoute('cp_authentication.user_info');
+    $url = Url::fromRoute('cp_account.dashboard');
     $response = new RedirectResponse($url->toString());
     $response->send();
   }

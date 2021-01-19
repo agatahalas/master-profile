@@ -29,7 +29,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
           '#items' => [
             [
               '#type' => 'link',
-              '#url' => Url::fromRoute('cp_authentication.user_info', [], [
+              '#url' => Url::fromRoute('cp_account.dashboard', [], [
                 'attributes' => [
                   'id' => 'heart',
                 ],
