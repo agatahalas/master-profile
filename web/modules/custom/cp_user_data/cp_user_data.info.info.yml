@@ -1,0 +1,6 @@
+name: 'CP User data'
+type: module
+description: 'Provides an overview of data provided from different endpoints.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: 'cp'
