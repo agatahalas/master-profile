@@ -81,8 +81,7 @@ class Dashboard extends ControllerBase {
     if ($this->ckidConnectorService->loggedIn()) {
       try {
         $kid_session = \Drupal::service('tempstore.private')->get('kid_session');
-        $body = $this->ckidBasicData->getData($kid_session->get('kid_access_token_value'));
-        $user_info = $this->ckidBasicData->prepareUserInfo($body);
+        $user_info = $this->ckidBasicData->getData($kid_session->get('kid_access_token_value'), TRUE);
 
         $build = [
           '#theme' => 'cp_user_info_list',

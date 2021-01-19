@@ -33,7 +33,7 @@ class CkidBasicData {
     $this->httpClient = $http_client;
   }
 
-  public function getData($token) {
+  public function getData($token, $formatted = FALSE) {
     $uri = $this->ckidConnector->getApiUrl() . '/api/v2/oauth/userinfo';
     $response = $this->httpClient->get($uri, [
       'headers' => [
@@ -43,7 +43,11 @@ class CkidBasicData {
     ]);
 
     $body = json_decode($response->getBody()->getContents());
-
+    if (!empty($formatted)) {
+      $formatted_data = $this->prepareUserInfo($body);
+      //dd($formatted_data);
+      return $formatted_data;
+    }
     return $body;
   }
 
