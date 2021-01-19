@@ -65,7 +65,7 @@ class BasicData extends ControllerBase {
       $container->get('cp_authentication.ckid_connector'),
       $container->get('request_stack'),
       $container->get('http_client'),
-      $container->get('cp_user_basic_data.data')
+      $container->get('cp_user_basic_data.ckid_basic_data')
     );
   }
 
