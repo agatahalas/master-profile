@@ -22,6 +22,11 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
   public function build() {
     $build = [
       '#theme' => 'item_list',
+      '#attributes' => [
+        'class' => [
+          'cp-links-block'
+        ],
+      ],
       '#items' => [
         [
           '#theme' => 'item_list',
@@ -31,7 +36,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromRoute('cp_account.dashboard', [], [
                 'attributes' => [
-                  'id' => 'heart',
+                  'id' => 'profile',
                 ],
               ]),
               '#title' => $this->t('Account overview'),
@@ -46,7 +51,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'carwash-subscription',
+                  'id' => 'car-wash',
                 ],
               ]),
               '#title' => $this->t('Carwash subscription'),
@@ -73,7 +78,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'electric-vehicle',
+                  'id' => 'fuel',
                 ],
               ]),
               '#title' => $this->t('Electric vehicle'),
@@ -88,7 +93,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'payment-methods',
+                  'id' => 'credit-card',
                 ],
               ]),
               '#title' => $this->t('Payment methods'),
@@ -97,7 +102,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'transactions',
+                  'id' => 'document',
                 ],
               ]),
               '#title' => $this->t('Transactions'),
@@ -106,7 +111,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'invoice-data',
+                  'id' => 'document',
                 ],
               ]),
               '#title' => $this->t('Invoice data'),
@@ -121,7 +126,7 @@ class LinksBlock extends BlockBase implements BlockPluginInterface {
               '#type' => 'link',
               '#url' => Url::fromUri('http://test.me/go/here', [
                 'attributes' => [
-                  'id' => 'partner-agreements',
+                  'id' => 'document',
                 ],
               ]),
               '#title' => $this->t('Partner agreements'),

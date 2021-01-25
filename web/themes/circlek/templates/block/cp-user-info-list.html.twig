@@ -1,9 +1,23 @@
+<div class="cp-user-info-message">
+  {% if user_name %}
+    <h2 class="uk-text-bold"> {{ user_name }} </h2>
+  {% endif %}
+  {% if user_ckid %}
+    <p> <span class="uk-text-bold">Circle K ID: </span> {{ user_ckid }} </p>
+  {% endif %}
+</div>
+
 <ul {{ attributes }}>
   {% if items %}
     {% for item in items %}
-      <li {{ item.attributes }}>
+      <li {{ item.attributes }} class="uk-padding-small">
         {% if item.title %}
-          <a class="uk-accordion-title" href="#"> {{ item.title }} </a>
+          <a class="uk-accordion-title uk-text-bold" href="#">
+            {% if item.icon_markup %}
+              {{ item.icon_markup|raw }}
+            {% endif %}
+            {{ item.title }}
+          </a>
         {% endif %}
         <div class="uk-accordion-content">
           {%- if item.rows -%}

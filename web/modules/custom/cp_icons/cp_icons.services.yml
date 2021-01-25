@@ -1,0 +1,4 @@
+services:
+  cp_icons.icons_api:
+    class: Drupal\cp_icons\IconsAPI
+    arguments: ['@http_client', '@entity_type.manager', '@current_user']

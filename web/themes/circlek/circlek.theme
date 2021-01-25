@@ -47,6 +47,21 @@ function circlek_preprocess_html(array &$variables) {
 }
 
 /**
+ * Implements hook_library_info_alter().
+ */
+function circlek_library_info_alter(&$libraries, $extension) {
+  if (!empty($libraries['global-css'])) {
+    $libraries['global-css']['css']['base']['assets/uikit/dist/css/uikit.customer-profile.min.css']['minified'] = TRUE;
+    unset($libraries['global-css']['css']['base']['assets/uikit/dist/css/uikit.circlek.min.css']);
+  }
+
+  if (!empty($libraries['local-global-css'])) {
+    $libraries['local-global-css']['css']['base']['assets/uikit/dist/css/uikit.customer-profile.css']['minified'] = FALSE;
+    unset($libraries['local-global-css']['css']['base']['assets/uikit/dist/css/uikit.circlek.css']);
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for region.
  */
 function circlek_preprocess_region(array &$variables) {
@@ -181,12 +196,19 @@ function circlek_preprocess_block(array &$variables) {
 
 function circlek_add_uikit_icon(&$items) {
   if (!empty($items) && is_array($items)) {
+    $icon_client = \Drupal::service('cp_icons.icons_api');
+    $icons = $icon_client->getIcons('service');
+
     foreach ($items as $item_key => &$item_value) {
       if (isset($item_value['#type']) && $item_value['#type'] == 'link') {
         $attributes = $item_value['#url']->getOption('attributes');
-        $item_value['#title'] = [
-          '#markup' => '<span class="uk-margin-small-right" uk-icon="' . $attributes['id'] . '"></span>' . (string) $items[$item_key]['#title'],
-        ];
+        if (isset($icons[$attributes['id']])) {
+          $icon_url  = $icons[$attributes['id']]['url'] . '?color=da291c';
+          $icon_name = $icons[$attributes['id']]['name'];
+          $item_value['#title'] = [
+            '#markup' => '<img class="uk-margin-right" src="' . $icon_url . '" alt="' . $icon_name . '" width="35"/>' . (string) $items[$item_key]['#title'],
+          ];
+        }
       }
       else {
         $item_value['#title'] = [
@@ -195,6 +217,7 @@ function circlek_add_uikit_icon(&$items) {
         $item_value['#attributes']['class'][] = 'uk-list';
         $item_value['#attributes']['class'][] = 'uk-padding-remove-left';
         $item_value['#attributes']['class'][] = 'uk-list-large';
+        $item_value['#attributes']['class'][] = 'cp-links-section';
 
         circlek_add_uikit_icon($item_value['#items']);
       }

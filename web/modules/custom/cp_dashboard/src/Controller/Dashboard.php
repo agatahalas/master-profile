@@ -85,6 +85,8 @@ class Dashboard extends ControllerBase {
 
         $build = [
           '#theme' => 'cp_user_info_list',
+          '#user_name' => $user_info['Name'],
+          '#user_ckid' => $user_info['Circle K ID'],
         ];
         foreach ($user_info as $title => $value) {
           $items[] = [
@@ -96,6 +98,7 @@ class Dashboard extends ControllerBase {
 
         $build['#items'][] = [
           'title' => $this->t('My details'),
+          'icon' => 'profile',
           'rows' => $items,
           '#attributes' => [
             'class' => [
@@ -107,6 +110,7 @@ class Dashboard extends ControllerBase {
 
         $build['#items'][] = [
           'title' => $this->t('My cars'),
+          'icon' => 'car',
           'rows' => $items,
           '#attributes' => [
             'class' => [
@@ -118,6 +122,31 @@ class Dashboard extends ControllerBase {
 
         $build['#items'][] = [
           'title' => $this->t('Communication'),
+          'icon' => 'email',
+          'rows' => $items,
+          '#attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details',
+            ],
+          ],
+        ];
+
+        $build['#items'][] = [
+          'title' => $this->t('Password & Security'),
+          'icon' => '',
+          'rows' => $items,
+          '#attributes' => [
+            'class' => [
+              'user-info-table',
+              'my-details',
+            ],
+          ],
+        ];
+
+        $build['#items'][] = [
+          'title' => $this->t('Terms & Conditions'),
+          'icon' => 'tac',
           'rows' => $items,
           '#attributes' => [
             'class' => [
